@@ -1,8 +1,9 @@
 #!/bin/bash
-# =========================
-# Linux Browser Multi-Window Launcher
-# Opens multiple windows, one per site list, in the same workspace
-# =========================
+# ==========================================
+# Linux Browser Multi-Window Launcher (Auto)
+# - Opens one window per LIST# array
+# - Automatically detects LIST1, LIST2, LIST3, ...
+# ==========================================
 
 # -------- SELECT YOUR BROWSER (uncomment ONE) --------
 #BROWSER="/usr/bin/brave-browser"              # Brave (most distros)
@@ -21,7 +22,8 @@ BROWSER_ARGS=(
   # "--profile-directory=Default"
 )
 
-# ---- Define your site lists (one window per list) ----
+# -------- Define your site lists (one window per list) --------
+# Add as many LIST# arrays as you want: LIST1, LIST2, LIST3, ...
 LIST1=(
   "https://news.ycombinator.com"
   "https://www.bbc.com"
@@ -40,15 +42,22 @@ LIST3=(
   "https://www.youtube.com"
 )
 
-# =========================
+# OPTIONAL: Per-list profile (Chromium/Brave/Chrome)
+# Uncomment and set to use different profiles per window:
+#PROFILE_LIST1="Default"
+#PROFILE_LIST2="Work"
+#PROFILE_LIST3="Social"
+
+# ==========================================
 # Do not edit below
-# =========================
+# ==========================================
 
 if [ -z "${BROWSER:-}" ]; then
   echo "ERROR: You must uncomment and set the BROWSER path at the top of this script."
   exit 1
 fi
 
+# Validate browser exists (either in PATH or as an executable path)
 if ! command -v "$BROWSER" >/dev/null 2>&1; then
   if [ ! -x "$BROWSER" ]; then
     echo "ERROR: Browser not found or not executable at: $BROWSER"
@@ -56,16 +65,36 @@ if ! command -v "$BROWSER" >/dev/null 2>&1; then
   fi
 fi
 
-# Loop through LIST variables dynamically
-for varname in LIST1 LIST2 LIST3; do
-  declare -n SITES_REF="$varname"
-  if [ "${#SITES_REF[@]}" -eq 0 ]; then
+# Find all variables named LIST<number>, sort numerically (LIST1, LIST2, ...)
+mapfile -t LIST_VARS < <(compgen -A variable | grep -E '^LIST[0-9]+$' | sort -V)
+
+if [ "${#LIST_VARS[@]}" -eq 0 ]; then
+  echo "WARNING: No LIST# arrays found (e.g., LIST1, LIST2). Nothing to open."
+  exit 0
+fi
+
+for varname in "${LIST_VARS[@]}"; do
+  # Get number of URLs in this list without expanding the array
+  eval "COUNT=\${#$varname[@]}"
+  if [ "$COUNT" -eq 0 ]; then
+    echo "Skipping $varname (empty)."
     continue
   fi
 
-  echo "Opening window for $varname (${#SITES_REF[@]} tabs)"
-  "$BROWSER" --new-window "${BROWSER_ARGS[@]}" "${SITES_REF[@]}" >/dev/null 2>&1 &
+  # Nameref to the list array
+  declare -n SITES_REF="$varname"
+
+  # Optional per-list profile: PROFILE_LIST#
+  profile_var="PROFILE_${varname}"
+  profile_arg=()
+  if [ -n "${!profile_var-}" ]; then
+    profile_arg=( "--profile-directory=${!profile_var}" )
+  fi
+
+  echo "Opening window for $varname ($COUNT tabs)"
+  "$BROWSER" --new-window "${BROWSER_ARGS[@]}" "${profile_arg[@]}" "${SITES_REF[@]}" >/dev/null 2>&1 &
   sleep 0.7
 done
 
+# Don’t block the shell if the browser exits early
 wait -n 2>/dev/null || true
