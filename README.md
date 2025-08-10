@@ -12,19 +12,19 @@ Make it executable</br>
 chmod +x ~/launcher.sh
 
 (Optional) Create a desktop launcher:</br>
-Create a file:
-open terminal
+Create a file:</br>
+open terminal</br>
 nano ~/.local/share/applications/multi.launcher
 
 Edit "yourusername" below
 
 Paste into file:</br>
-[Desktop Entry]
-Name=Multi-Window Launcher
-Exec=/home/yourusername/launcher.sh
-Icon=brave-browser
-Terminal=false
-Type=Application
+[Desktop Entry]</br>
+Name=Multi-Window Launcher</br>
+Exec=/home/yourusername/launcher.sh</br>
+Icon=brave-browser</br>
+Terminal=false</br>
+Type=Application</br>
 Categories=Network;WebBrowser;
 
 Save file, then make it executable:
