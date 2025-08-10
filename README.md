@@ -11,14 +11,14 @@ Edit launcher.sh to pick your browser and create the list you want opened when l
 Make it executable</br>
 chmod +x ~/launcher.sh
 
-(Optional) Create a desktop launcher:
+(Optional) Create a desktop launcher:</br>
 Create a file:
 open terminal
 nano ~/.local/share/applications/multi.launcher
 
 Edit "yourusername" below
 
-Paste into file:
+Paste into file:</br>
 [Desktop Entry]
 Name=Multi-Window Launcher
 Exec=/home/yourusername/launcher.sh
