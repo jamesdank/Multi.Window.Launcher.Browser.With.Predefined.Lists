@@ -1,14 +1,14 @@
 # Multi.Window.Launcher.Browser.With.Predefined.Lists
 This is a bash launcher script to open multiple windows with predefined sites.
 
-How to use:
+How to use:</br>
 Download file:</br>
 cd ~</br>
 wget https://github.com/jamesdank/Multi.Window.Launcher.Browser.With.Predefined.Lists/blob/main/launcher.sh
 
 Edit launcher.sh to pick your browser and create the list you want opened when launched.
 
-Make it executable
+Make it executable</br>
 chmod +x ~/launcher.sh
 
 (Optional) Create a desktop launcher:
