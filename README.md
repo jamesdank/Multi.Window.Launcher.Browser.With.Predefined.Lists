@@ -2,7 +2,7 @@
 This is a bash launcher script to open multiple windows with predefined sites.
 
 How to use:
-Download file:
+Download file:</br>
 cd ~</br>
 wget https://github.com/jamesdank/Multi.Window.Launcher.Browser.With.Predefined.Lists/blob/main/launcher.sh
 
